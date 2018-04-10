@@ -35,4 +35,9 @@ public class RequestStats {
 	public String getPath() {
 		return path;
 	}
+	
+	@Override 
+	public String toString() {
+		return method + ' ' + path + ' ' + resultCode + ' ' + reqTime;
+	}
 }
