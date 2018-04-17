@@ -30,7 +30,7 @@ public class ServerService implements Callable<RequestStats> {
 
 		for (String url : this.services.keySet()) {
 			if (request.getPath().matches(url)) {
-				services.get(url).fire(request, response);
+				services.get(url).doInjection().fire(request, response);
 				socket.close();
 				return new RequestStats(request.getMethod(), request.getPath());
 			}

@@ -1,11 +1,13 @@
 package pl.codeme.javaseadv.e6.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
@@ -61,12 +63,38 @@ public class Server {
 		
 	}
 
+	private static void registerServices() {
+		String packageName = "pl.codeme.javaseadv.e6.services";
+		String dirName = packageName.replace('.', System.getProperties().getProperty("file.separator").charAt(0) );
+		
+		URL url = ClassLoader.getSystemResource(dirName);
+//		System.out.println(url.getPath());
+
+		File directory = new File(url.getPath());
+		
+		for (String f : directory.list()) {
+			String serviceName = f.substring(0, f.indexOf('.'));
+			try {
+				registerService(Class.forName(packageName+'.'+serviceName));
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+//		for(Object key : System.getProperties().keySet()) {
+//			System.out.println(key + ": " + System.getProperties().get(key));
+//		}
+	}
+	
 	public static void main(String[] args) {
 		stats = new HashSet<Future<RequestStats>>();
 		services = new HashMap<String, ServiceEndpoint>();
 		
 		//		Class clazz = Class.forName("pl.codeme.javaseadv.e6.services.Blog");
-		registerService(Blog.class);
+		
+		registerServices();
+
+//		registerService(Blog.class); // już nie potrzebujemy, registerServices() robi to za nas
 
 		try {
 			ExecutorService executor = Executors.newFixedThreadPool(10);
