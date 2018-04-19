@@ -58,6 +58,7 @@ public class Request {
 	}
 	
 	public void processBody() {
+		body = "";
 		try {
 			while (br.ready()) {
 				body += br.readLine();
